@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  psql:
+    image: "postgres:latest"
+    restart: "always"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "test"
+      POSTGRES_USER: "test"
+      POSTGRES_DB: "test"
+
+  mysql:
+    image: "mysql:latest"
+    restart: "always"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_PASSWORD: "test"
+      MYSQL_USER: "test"
+      MYSQL_DATABASE: "test"
