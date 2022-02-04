@@ -116,21 +116,6 @@ class BaseString(BaseType[str]):
         return sql
 
 
-class BaseBytes(BaseType[bytes]):
-    __type__ = bytes
-    __encoding__: str
-
-    def __init__(self, encoding: str = "UTF-8") -> None:
-        self.__encoding__ = encoding  # NOT SQL DATA
-        super().__init__()
-
-    def _to(self, value: bytes) -> str:
-        return value.decode(encoding=self.__encoding__)
-
-    def _from(self, sql: str) -> bytes:
-        return sql.encode(encoding=self.__encoding__)
-
-
 class BaseBool(BaseType[bool]):
     __type__ = bool
 

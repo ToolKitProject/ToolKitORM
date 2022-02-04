@@ -1,10 +1,10 @@
+"""FIXME: DOCS"""
 from toolkitorm.types.base import (
     BaseAny,
     BaseInteger,
     BaseFloat,
     BaseDecimal,
     BaseString,
-    BaseBytes,
     BaseBool,
     BaseList,
     BaseDict,
@@ -34,10 +34,6 @@ class Decimal(BaseDecimal):
         super().__init__(precision, scale)
 
 
-class Numeric(Decimal):
-    pass
-
-
 class Real(BaseFloat):
     pass
 
@@ -57,10 +53,6 @@ class Char(BaseString):
 
 
 class Text(BaseString):
-    pass
-
-
-class ByteA(BaseBytes):
     pass
 
 
@@ -101,9 +93,9 @@ class JSONB(BaseDict[_T]):
 
 
 # ORM types
-class List(BaseList[_T]):
-    pass
-
-
 class Dynamic(BaseAny):
-    pass
+    __type_name__ = Text.__type_name__
+
+
+class List(BaseList[_T]):
+    __type_name__ = Text.__type_name__
