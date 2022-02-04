@@ -5,7 +5,6 @@ from toolkitorm.types.base import (
     BaseFloat,
     BaseDecimal,
     BaseString,
-    BaseBytes,
     BaseBool,
     BaseList,
     BaseDict,
@@ -40,10 +39,6 @@ class Boolean(BaseBool):
 
     def _from(self, sql: str) -> bool:
         return bool(int(sql))
-
-
-class Bytes(BaseBytes):
-    __type_name__ = Text.__type_name__
 
 
 class Decimal(BaseDecimal):
