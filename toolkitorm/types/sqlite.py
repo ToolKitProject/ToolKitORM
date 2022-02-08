@@ -1,18 +1,18 @@
 """FIXME: DOCS"""
 from toolkitorm.types.base import (
-    BaseAny,
-    BaseInteger,
-    BaseFloat,
-    BaseDecimal,
-    BaseString,
-    BaseBool,
-    BaseList,
-    BaseDict,
-    BaseDate,
-    BaseTime,
-    BaseDatetime,
-    BaseTimedelta,
     _T,
+    BaseAny,
+    BaseBool,
+    BaseDate,
+    BaseDatetime,
+    BaseDecimal,
+    BaseDict,
+    BaseFloat,
+    BaseInteger,
+    BaseList,
+    BaseString,
+    BaseTime,
+    BaseTimedelta,
 )
 
 
@@ -36,9 +36,6 @@ class Blob(BaseAny):
 # ORM types
 class Boolean(BaseBool):
     __type_name__ = Integer.__type_name__
-
-    def _from(self, sql: str) -> bool:
-        return bool(int(sql))
 
 
 class Decimal(BaseDecimal):

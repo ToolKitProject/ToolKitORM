@@ -1,18 +1,18 @@
 """FIXME: DOCS"""
 from toolkitorm.types.base import (
-    BaseAny,
-    BaseInteger,
-    BaseFloat,
-    BaseDecimal,
-    BaseString,
-    BaseBool,
-    BaseList,
-    BaseDict,
-    BaseDate,
-    BaseTime,
-    BaseDatetime,
-    BaseTimedelta,
     _T,
+    BaseAny,
+    BaseBool,
+    BaseDate,
+    BaseDatetime,
+    BaseDecimal,
+    BaseDict,
+    BaseFloat,
+    BaseInteger,
+    BaseList,
+    BaseString,
+    BaseTime,
+    BaseTimedelta,
 )
 
 

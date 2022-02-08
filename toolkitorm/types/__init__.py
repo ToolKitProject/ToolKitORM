@@ -1,8 +1,3 @@
 """FIXME: DOCS"""
-
-from . import base
-from . import sqlite
-from . import postgresql
-from . import mysql
-
+from . import base, mysql, postgresql, sqlite
 from .base import V

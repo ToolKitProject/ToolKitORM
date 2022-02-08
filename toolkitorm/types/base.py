@@ -5,10 +5,10 @@ TODO: Add exceptions
 """
 from abc import ABC, abstractmethod
 from ast import literal_eval
-from typing import Generic, TypeVar, NewType
-from json import loads, dumps
-from datetime import date, time, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal as decimal
+from json import dumps, loads
+from typing import Generic, NewType, TypeVar
 
 V = TypeVar("V")
 SQL = NewType("SQL", str)
@@ -23,11 +23,13 @@ class BaseType(Generic[V], ABC):
 
     __type__: type[V]
     __type_name__: str
-    __args__: tuple[object]
+    __args__: tuple[object, ...]
 
     def __init__(self, *args: object) -> None:
         assert hasattr(self, "__type__")  # TODO
         assert hasattr(self, "__type_name__")  # TODO
+
+        self.__args__ = args
 
     def __init_subclass__(cls, **kwargs: object) -> None:
         if not hasattr(cls, "__type_name__"):
@@ -35,7 +37,7 @@ class BaseType(Generic[V], ABC):
 
     def to_sql(self, value: V | None) -> SQL:
         """
-        Will get python value and return 'repr SQL' value
+        Get python value and return 'repr SQL' value
         """
         if value is None:
             return SQL("NULL")
@@ -44,7 +46,7 @@ class BaseType(Generic[V], ABC):
 
     def from_sql(self, sql: SQL) -> V | None:
         """
-        Will get 'not repr SQL' value and return python value
+        Get 'not repr SQL' value and return python value
         """
         if sql.upper() == "NULL":
             return None
@@ -53,7 +55,7 @@ class BaseType(Generic[V], ABC):
 
     @property
     def sql_name(self) -> str:
-        """Returns the name of the SQL type"""
+        """Return name of the SQL type"""
         args = ",".join(map(str, self.__args__))
         return f"{self.__type_name__.upper()}({args})"
 
