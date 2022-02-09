@@ -1,3 +1,4 @@
+"""FIXME: DOCS"""
 from typing import Generic
 
 from toolkitorm.types import V
