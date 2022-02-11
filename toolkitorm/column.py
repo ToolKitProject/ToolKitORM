@@ -1,10 +1,14 @@
 """FIXME: DOCS"""
 from typing import Generic, Optional
 
-from toolkitorm.types.base import BaseType, V
+from toolkitorm.basetable import BaseTable
+from toolkitorm.conditions import Condition
+from toolkitorm.storage import Data
+from toolkitorm.types.base import SQL, BaseType, V
 
 
-class BaseColumn(Generic[V]):
+class Column(Generic[V]):
+    table: type[BaseTable]
     name: str
     value_type: BaseType[V]
     default: V | None
@@ -12,7 +16,7 @@ class BaseColumn(Generic[V]):
     auto: bool
     unique: bool
     primary: bool
-    foreign: Optional["BaseColumn[V]"]
+    foreign: Optional["Column[V]"]
 
     def __init__(
         self,
@@ -22,7 +26,7 @@ class BaseColumn(Generic[V]):
         auto: bool = False,
         unique: bool = False,
         primary: bool = False,
-        foreign: Optional["BaseColumn[V]"] = None,
+        foreign: Optional["Column[V]"] = None,
     ) -> None:
         self.value_type = value_type
         self.default = default
@@ -38,13 +42,38 @@ class BaseColumn(Generic[V]):
             self.nullable = True
             self.unique = True
 
-    def __set_name__(self, owner: type, name: str) -> None:
+    def __set_name__(self, owner: type[BaseTable], name: str) -> None:
+        self.table = owner
         self.name = name
 
+    def __get__(self, instance: BaseTable, owner: type[BaseTable]) -> V | None:
+        return self.get(instance).to_python()
 
-class Column(BaseColumn[V]):
-    pass
+    def get(self, instance: BaseTable) -> Data[V]:
+        return instance.__storage__.get(self.name)
+
+    @property
+    def sql_name(self) -> SQL:
+        return SQL(f"{self.name}")
+
+    #! This violates the Liskov substitution principle
+    def __eq__(self, value: V) -> Condition:  # type:ignore
+        return Condition(self.sql_name, "=", self.value_type.to_sql(value))
+
+    def __ne__(self, value: V) -> Condition:  # type:ignore
+        return Condition(self.sql_name, "!=", self.value_type.to_sql(value))
+
+    def __lt__(self, value: V) -> Condition:
+        return Condition(self.sql_name, "<", self.value_type.to_sql(value))
+
+    def __gt__(self, value: V) -> Condition:
+        return Condition(self.sql_name, ">", self.value_type.to_sql(value))
+
+    def __le__(self, value: V) -> Condition:
+        return Condition(self.sql_name, "<=", self.value_type.to_sql(value))
+
+    def __ge__(self, value: V) -> Condition:
+        return Condition(self.sql_name, ">=", self.value_type.to_sql(value))
 
 
-class OptionalColumn(BaseColumn[V | None]):
-    pass
+__all__ = ["Column"]

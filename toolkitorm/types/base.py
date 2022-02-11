@@ -1,8 +1,4 @@
-"""
-FIXME: DOCS
-
-TODO: Add exceptions
-"""
+"""FIXME: DOCS"""
 from abc import ABC, abstractmethod
 from ast import literal_eval
 from datetime import date, datetime, time, timedelta
@@ -52,6 +48,15 @@ class BaseType(Generic[V], ABC):
             return None
         else:
             return self._from(sql)
+
+    def convert(self, value: object) -> V | None:
+        """
+        Get any value and return python value (Implicit conversion)
+        """
+        if isinstance(value, self.__type__) or value is None:
+            return value
+        else:
+            return self.from_sql(SQL(str(value)))
 
     @property
     def sql_name(self) -> str:
@@ -186,3 +191,20 @@ class BaseTimedelta(BaseType[timedelta]):
 
     def _from(self, sql: str) -> timedelta:
         return timedelta(seconds=float(sql))
+
+
+__all__ = [
+    "BaseType",
+    "BaseAny",
+    "BaseInteger",
+    "BaseFloat",
+    "BaseDecimal",
+    "BaseString",
+    "BaseBool",
+    "BaseList",
+    "BaseDict",
+    "BaseDate",
+    "BaseTime",
+    "BaseDatetime",
+    "BaseTimedelta",
+]
