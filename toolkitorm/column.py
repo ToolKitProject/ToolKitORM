@@ -47,9 +47,9 @@ class Column(Generic[V]):
         self.name = name
 
     def __get__(self, instance: BaseTable, owner: type[BaseTable]) -> V | None:
-        return self.get(instance).to_python()
+        return self.data(instance).to_python()
 
-    def get(self, instance: BaseTable) -> Data[V]:
+    def data(self, instance: BaseTable) -> Data[V]:
         return instance.__storage__.get(self.name)
 
     @property

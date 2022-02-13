@@ -9,11 +9,9 @@ class Data(Generic[V]):
     value: V | None
     value_type: BaseType[V]
 
-    def __init__(self, value: object, value_type: BaseType[V]) -> None:
+    def __init__(self, value_type: BaseType[V]) -> None:
         self.value = None
         self.value_type = value_type
-
-        self.set(value)
 
     def to_sql(self) -> SQL:
         return self.value_type.to_sql(self.value)
@@ -35,9 +33,9 @@ class Storage:
         assert name in self.storage, "Column not found"  # TODO
         return self.storage[name]
 
-    def add(self, name: str, value: object, value_type: BaseType[V]) -> None:
+    def add(self, name: str, value_type: BaseType[V]) -> None:
         assert name not in self.storage, "Column already exist"  # TODO
-        self.storage[name] = Data(value, value_type)
+        self.storage[name] = Data(value_type)
 
 
 __all__ = ["Data", "Storage"]

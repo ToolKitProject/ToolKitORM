@@ -6,6 +6,8 @@ from . import basetable
 from . import conditions
 from . import column
 
+from . import columns
+
 from . import table
 
 __all__ = [
