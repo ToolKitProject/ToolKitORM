@@ -1,35 +1,28 @@
-"""FIXME: DOCS"""
 from abc import ABC, abstractmethod
 from ast import literal_eval
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal as decimal
 from json import dumps, loads
-from typing import Generic, NewType, TypeVar
+from typing import Generic
 
-V = TypeVar("V")
-SQL = NewType("SQL", str)
-
-_T = TypeVar("_T")
+from toolkitorm import SQL, V
+from toolkitorm.sql.dialect import BaseDialect
 
 
 class BaseType(Generic[V], ABC):
-    """
-    Abstract class for SQL data types
-    """
+    """Abstract class for SQL data types"""
 
     __type__: type[V]
     __type_name__: str
+    __dialect__: BaseDialect
     __args__: tuple[object, ...]
 
     def __init__(self, *args: object) -> None:
         assert hasattr(self, "__type__")  # TODO
-        assert hasattr(self, "__type_name__")  # TODO
-
+        if not hasattr(self, "__type_name__"):
+            self.__type_name__ = type(self).__name__
+        assert hasattr(self, "__dialect__")  # TODO
         self.__args__ = args
-
-    def __init_subclass__(cls, **kwargs: object) -> None:
-        if not hasattr(cls, "__type_name__"):
-            cls.__type_name__ = cls.__name__
 
     def to_sql(self, value: V | None) -> SQL:
         """
@@ -61,7 +54,7 @@ class BaseType(Generic[V], ABC):
     @property
     def sql_name(self) -> str:
         """Return name of the SQL type"""
-        args = ",".join(map(str, self.__args__))
+        args = ",".join(map(repr, self.__args__))
         return f"{self.__type_name__.upper()}({args})"
 
     @abstractmethod
@@ -133,23 +126,23 @@ class BaseBool(BaseType[bool]):
         return True if sql.upper() in ("TRUE", "YES", "ON", "1") else False
 
 
-class BaseList(BaseType[list[_T]]):
+class BaseList(BaseType[list[V]]):
     __type__ = list
 
-    def _to(self, value: list[_T]) -> str:
+    def _to(self, value: list[V]) -> str:
         return repr(dumps(value))
 
-    def _from(self, sql: str) -> list[_T]:
+    def _from(self, sql: str) -> list[V]:
         return loads(sql)
 
 
-class BaseDict(BaseType[dict[str, _T]]):
+class BaseDict(BaseType[dict[str, V]]):
     __type__ = dict
 
-    def _to(self, value: dict[str, _T]) -> str:
+    def _to(self, value: dict[str, V]) -> str:
         return repr(dumps(value))
 
-    def _from(self, sql: str) -> dict[str, _T]:
+    def _from(self, sql: str) -> dict[str, V]:
         return loads(sql)
 
 
@@ -177,7 +170,7 @@ class BaseDatetime(BaseType[datetime]):
     __type__ = datetime
 
     def _to(self, value: datetime) -> str:
-        return repr(value.isoformat())
+        return repr(value.isoformat(" "))
 
     def _from(self, sql: str) -> datetime:
         return datetime.fromisoformat(sql)

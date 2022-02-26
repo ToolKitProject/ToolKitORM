@@ -1,10 +1,7 @@
 from datetime import datetime
 
 import pymysql as sql
-from toolkitorm.column import Column
-from toolkitorm.storage import Storage
-from toolkitorm.table import Table
-from toolkitorm.types.mysql import JSON, Boolean, Datetime, Integer, Text
+from toolkitorm.orm.mysql import JSON, Boolean, Datetime, Integer, Text, Table, Column
 
 
 def connect() -> sql.Connection:

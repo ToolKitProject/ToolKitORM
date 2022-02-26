@@ -1,8 +1,7 @@
-"""FIXME: DOCS"""
 from typing import Generic
 
-from toolkitorm.types import V
-from toolkitorm.types.base import SQL, BaseType
+from toolkitorm import SQL, V
+from toolkitorm.sql.types import BaseType
 
 
 class Data(Generic[V]):

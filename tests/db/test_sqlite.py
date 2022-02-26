@@ -1,10 +1,7 @@
 import sqlite3 as sql
 from datetime import datetime
-from toolkitorm.column import Column
 
-from toolkitorm.storage import Storage
-from toolkitorm.table import Table
-from toolkitorm.types.sqlite import Boolean, Datetime, Dict, Integer, Text
+from toolkitorm.orm.sqlite import Boolean, Column, Datetime, Dict, Integer, Table, Text
 
 
 def connect() -> sql.Connection:

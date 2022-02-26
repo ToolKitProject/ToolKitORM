@@ -1,10 +1,16 @@
 from datetime import datetime
 
 import pg8000 as sql
-from toolkitorm.column import Column
-from toolkitorm.storage import Storage
-from toolkitorm.table import Table
-from toolkitorm.types.postgresql import JSON, Boolean, Integer, Text, Timestamp
+
+from toolkitorm.orm.postgresql import (
+    JSON,
+    Boolean,
+    Column,
+    Integer,
+    Table,
+    Text,
+    Timestamp,
+)
 
 
 def connect() -> sql.Connection:
