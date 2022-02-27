@@ -1,12 +1,11 @@
-from typing import Generic, Optional, overload
+from typing import Generic, Iterable, Optional, overload
 
+from toolkitorm import V
+from toolkitorm.sql.basistable import BasisTable
+from toolkitorm.sql.conditions import Condition
 from toolkitorm.sql.dialect import BaseDialect
-
-from .basistable import BasisTable
-from .conditions import Condition
-from .storage import Data
-from .types import BaseType
-from toolkitorm import V, SQL
+from toolkitorm.sql.storage import Data
+from toolkitorm.sql.types import BaseType
 
 
 class BaseColumn(Generic[V]):
@@ -59,14 +58,12 @@ class BaseColumn(Generic[V]):
         ...
 
     @overload
-    def __get__(self, instance: None, owner: type[BasisTable]) -> "BaseColumn":
+    def __get__(self, instance: None, owner: type[BasisTable]) -> "BaseColumn[V]":
         ...
 
     def __get__(
-        self,
-        instance: BasisTable | None,
-        owner: type[BasisTable],
-    ) -> V | "BaseColumn" | None:
+        self, instance: BasisTable | None, owner: type[BasisTable]
+    ) -> V | "BaseColumn[V]" | None:
         if instance is None:
             return self
         return self.data(instance).to_python()
@@ -75,38 +72,51 @@ class BaseColumn(Generic[V]):
         return instance.__storage__.get(self.name)
 
     @property
-    def sql_name(self) -> SQL:
-        return self.__dialect__.struct(SQL(self.name))
+    def sql_name(self) -> str:
+        return f"{self.table.sql_name}.{self.__dialect__.name(self.name)}"
 
     #! This violates the Liskov substitution principle
-    def __eq__(self, value: V) -> Condition:  # type:ignore
+    def __eq__(self, value: object) -> Condition:  # type:ignore
         return Condition(
-            self.table, self.sql_name, self.__dialect__.eq, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.EQ, self.value_type.to_sql(value)
         )
 
-    def __ne__(self, value: V) -> Condition:  # type:ignore
+    def __ne__(self, value: object) -> Condition:  # type:ignore
         return Condition(
-            self.table, self.sql_name, self.__dialect__.ne, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.NE, self.value_type.to_sql(value)
         )
 
-    def __lt__(self, value: V) -> Condition:
+    def __lt__(self, value: object) -> Condition:
         return Condition(
-            self.table, self.sql_name, self.__dialect__.lt, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.LT, self.value_type.to_sql(value)
         )
 
-    def __gt__(self, value: V) -> Condition:
+    def __gt__(self, value: object) -> Condition:
         return Condition(
-            self.table, self.sql_name, self.__dialect__.gt, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.GT, self.value_type.to_sql(value)
         )
 
-    def __le__(self, value: V) -> Condition:
+    def __le__(self, value: object) -> Condition:
         return Condition(
-            self.table, self.sql_name, self.__dialect__.le, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.LE, self.value_type.to_sql(value)
         )
 
-    def __ge__(self, value: V) -> Condition:
+    def __ge__(self, value: object) -> Condition:
         return Condition(
-            self.table, self.sql_name, self.__dialect__.ge, self.value_type.to_sql(value)
+            self.table, self.sql_name, self.__dialect__.GE, self.value_type.to_sql(value)
+        )
+
+    def IS(self, value: object) -> Condition:
+        return Condition(
+            self.table, self.sql_name, self.__dialect__.IS, self.value_type.to_sql(value)
+        )
+
+    def IN(self, *values: object) -> Condition:
+        return Condition(
+            self.table,
+            self.sql_name,
+            self.__dialect__.IN,
+            f'({",".join([self.value_type.to_sql(v) for v in values])})',
         )
 
 

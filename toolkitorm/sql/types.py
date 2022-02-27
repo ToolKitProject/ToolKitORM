@@ -5,7 +5,7 @@ from decimal import Decimal as decimal
 from json import dumps, loads
 from typing import Generic
 
-from toolkitorm import SQL, V
+from toolkitorm import V
 from toolkitorm.sql.dialect import BaseDialect
 
 
@@ -24,24 +24,6 @@ class BaseType(Generic[V], ABC):
         assert hasattr(self, "__dialect__")  # TODO
         self.__args__ = args
 
-    def to_sql(self, value: V | None) -> SQL:
-        """
-        Get python value and return 'repr SQL' value
-        """
-        if value is None:
-            return SQL("NULL")
-        else:
-            return SQL(self._to(value))
-
-    def from_sql(self, sql: SQL) -> V | None:
-        """
-        Get 'not repr SQL' value and return python value
-        """
-        if sql.upper() == "NULL":
-            return None
-        else:
-            return self._from(sql)
-
     def convert(self, value: object) -> V | None:
         """
         Get any value and return python value (Implicit conversion)
@@ -49,7 +31,26 @@ class BaseType(Generic[V], ABC):
         if isinstance(value, self.__type__) or value is None:
             return value
         else:
-            return self.from_sql(SQL(str(value)))
+            return self.from_sql(str(value))
+
+    def to_sql(self, value: object) -> str:
+        """
+        Get python value and return 'repr SQL' value
+        """
+        v = self.convert(value)
+        if v is None:
+            return self.__dialect__.NULL
+        else:
+            return self._to(v)
+
+    def from_sql(self, sql: str) -> V | None:
+        """
+        Get 'not repr SQL' value and return python value
+        """
+        if sql.upper() == self.__dialect__.NULL:
+            return None
+        else:
+            return self._from(sql)
 
     @property
     def sql_name(self) -> str:
@@ -70,7 +71,7 @@ class BaseAny(BaseType[object]):
     __type__ = object
 
     def _to(self, value: object) -> str:
-        return repr(value)
+        return self.__dialect__.string(value)
 
     def _from(self, sql: str) -> object:
         return literal_eval(sql)
@@ -80,7 +81,7 @@ class BaseInteger(BaseType[int]):
     __type__ = int
 
     def _to(self, value: int) -> str:
-        return repr(value)
+        return str(value)
 
     def _from(self, sql: str) -> int:
         return int(sql)
@@ -90,7 +91,7 @@ class BaseFloat(BaseType[float]):
     __type__ = float
 
     def _to(self, value: float) -> str:
-        return repr(value)
+        return str(value)
 
     def _from(self, sql: str) -> float:
         return float(sql)
@@ -100,7 +101,7 @@ class BaseDecimal(BaseType[decimal]):
     __type__ = decimal
 
     def _to(self, value: decimal) -> str:
-        return repr(str(value))
+        return str(value)
 
     def _from(self, sql: str) -> decimal:
         return decimal(sql)
@@ -110,7 +111,7 @@ class BaseString(BaseType[str]):
     __type__ = str
 
     def _to(self, value: str) -> str:
-        return repr(value)
+        return self.__dialect__.string(value)
 
     def _from(self, sql: str) -> str:
         return sql
@@ -120,17 +121,17 @@ class BaseBool(BaseType[bool]):
     __type__ = bool
 
     def _to(self, value: bool) -> str:
-        return str(value).upper()
+        return self.__dialect__.TRUE[0] if value else self.__dialect__.FALSE[0]
 
     def _from(self, sql: str) -> bool:
-        return True if sql.upper() in ("TRUE", "YES", "ON", "1") else False
+        return True if sql.upper() in self.__dialect__.TRUE else False
 
 
 class BaseList(BaseType[list[V]]):
     __type__ = list
 
     def _to(self, value: list[V]) -> str:
-        return repr(dumps(value))
+        return self.__dialect__.string(dumps(value))
 
     def _from(self, sql: str) -> list[V]:
         return loads(sql)
@@ -140,7 +141,7 @@ class BaseDict(BaseType[dict[str, V]]):
     __type__ = dict
 
     def _to(self, value: dict[str, V]) -> str:
-        return repr(dumps(value))
+        return self.__dialect__.string(dumps(value))
 
     def _from(self, sql: str) -> dict[str, V]:
         return loads(sql)
@@ -150,7 +151,7 @@ class BaseDate(BaseType[date]):
     __type__ = date
 
     def _to(self, value: date) -> str:
-        return repr(value.isoformat())
+        return self.__dialect__.string(value.isoformat())
 
     def _from(self, sql: str) -> date:
         return date.fromisoformat(sql)
@@ -160,7 +161,7 @@ class BaseTime(BaseType[time]):
     __type__ = time
 
     def _to(self, value: time) -> str:
-        return repr(value.isoformat())
+        return self.__dialect__.string(value.isoformat())
 
     def _from(self, sql: str) -> time:
         return time.fromisoformat(sql)
@@ -170,7 +171,7 @@ class BaseDatetime(BaseType[datetime]):
     __type__ = datetime
 
     def _to(self, value: datetime) -> str:
-        return repr(value.isoformat(" "))
+        return self.__dialect__.string(value.isoformat(" "))
 
     def _from(self, sql: str) -> datetime:
         return datetime.fromisoformat(sql)
@@ -180,7 +181,7 @@ class BaseTimedelta(BaseType[timedelta]):
     __type__ = timedelta
 
     def _to(self, value: timedelta) -> str:
-        return repr(str(value.total_seconds()))
+        return self.__dialect__.string(str(value.total_seconds()))
 
     def _from(self, sql: str) -> timedelta:
         return timedelta(seconds=float(sql))

@@ -1,5 +1,3 @@
-from copy import deepcopy
-from toolkitorm import V
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.basistable import BasisTable
 from toolkitorm.sql.column import BaseColumn
@@ -8,16 +6,8 @@ from toolkitorm.sql.columns import Columns
 
 class BaseTable(BasisTable):
     """Table without dialect"""
-    __columns__: Columns
 
-    def __init_subclass__(
-        cls, table: str | None = None, dialect: BaseDialect | None = None
-    ) -> None:
-        if table is not None:
-            cls.__table__ = table
-        if dialect is not None:
-            cls.__dialect__ = dialect
-        return super().__init_subclass__()
+    __columns__: Columns
 
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__()

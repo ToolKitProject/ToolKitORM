@@ -1,6 +1,6 @@
 from typing import Generic
 
-from toolkitorm import SQL, V
+from toolkitorm import V
 from toolkitorm.sql.types import BaseType
 
 
@@ -12,7 +12,7 @@ class Data(Generic[V]):
         self.value = None
         self.value_type = value_type
 
-    def to_sql(self) -> SQL:
+    def to_sql(self) -> str:
         return self.value_type.to_sql(self.value)
 
     def to_python(self) -> V | None:

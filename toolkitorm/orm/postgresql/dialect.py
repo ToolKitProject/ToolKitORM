@@ -2,7 +2,10 @@ from toolkitorm.sql.dialect import BaseDialect
 
 
 class PostgreSQLDialect(BaseDialect):
-    struct_quotes = '"'
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.NAME = '"'
 
 
 __all__ = ["PostgreSQLDialect"]
