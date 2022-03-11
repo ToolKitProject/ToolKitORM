@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "ToolKitORM"
-version = "0.1.0"
+version = "0.0.0pre"
 description = "Python ORM with type hinting"
 authors = ["Igor <50257429+igorechek06@users.noreply.github.com>"]
-license = "GPL-3.0-only"
+license = "LGPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/ToolKitProject/ToolKit-ORM"
 keywords = ["ToolKitORM", "ORM", "ToolKitProject"]
@@ -18,10 +18,8 @@ pdoc3 = "^0.10.0"
 pytest = "^6.2.5"
 mypy = "^0.931"
 black = "^22.1.0"
-jedi = "^0.18.1"
-python-lsp-server = "^1.3.3"
-pylsp-mypy = "^0.5.7"
-python-lsp-black = "^1.1.0"
+cryptography = "^36.0.1"
+types-PyMySQL = "^1.0.13"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
