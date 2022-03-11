@@ -34,7 +34,6 @@ class BaseColumn(Generic[V]):
         foreign: Optional["BaseColumn[V]"] = None,
     ) -> None:
         assert type(value_type.__dialect__) is type(self.__dialect__)
-
         self.value_type = value_type
         self.default = default
         self.nullable = nullable
@@ -42,7 +41,6 @@ class BaseColumn(Generic[V]):
         self.unique = unique
         self.primary = primary
         self.foreign = foreign
-
         if self.auto:
             self.nullable = True
         if self.primary:

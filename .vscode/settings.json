@@ -1,6 +1,7 @@
 {
     "python.linting.mypyEnabled": true,
     "python.linting.enabled": true,
+    "python.formatting.provider": "black",
     "python.testing.pytestArgs": [
         "tests",
         "-s"

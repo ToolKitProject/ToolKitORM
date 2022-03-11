@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import pg8000 as sql
+from pg8000 import connect
 
 from toolkitorm.orm.postgresql import (
     JSON,
@@ -11,10 +11,15 @@ from toolkitorm.orm.postgresql import (
     Text,
     Timestamp,
 )
+from toolkitorm.request.manager import Manager
+
+manager = Manager(connect, user="test", database="test", password="test")
 
 
-def connect() -> sql.Connection:
-    return sql.connect(user="test", database="test", password="test")
+def test_connect() -> None:
+    with manager.connect() as session:
+        session("CREATE TABLE IF NOT EXISTS test (test INTEGER)")
+        session("DROP TABLE IF EXISTS test")
 
 
 def test_storage() -> None:

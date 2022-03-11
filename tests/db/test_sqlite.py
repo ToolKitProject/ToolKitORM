@@ -1,11 +1,16 @@
-import sqlite3 as sql
 from datetime import datetime
+from sqlite3 import connect
 
 from toolkitorm.orm.sqlite import Boolean, Column, Datetime, Dict, Integer, Table, Text
+from toolkitorm.request.manager import Manager
+
+manager = Manager(connect, "database.sqlite")
 
 
-def connect() -> sql.Connection:
-    return sql.connect("database.sqlite")
+def test_connect() -> None:
+    with manager.connect() as session:
+        session("CREATE TABLE IF NOT EXISTS test (test INTEGER)")
+        session("DROP TABLE IF EXISTS test")
 
 
 def test_storage() -> None:

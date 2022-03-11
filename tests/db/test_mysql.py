@@ -1,11 +1,17 @@
 from datetime import datetime
 
-import pymysql as sql
-from toolkitorm.orm.mysql import JSON, Boolean, Datetime, Integer, Text, Table, Column
+from pymysql import connect
+
+from toolkitorm.orm.mysql import JSON, Boolean, Column, Datetime, Integer, Table, Text
+from toolkitorm.request.manager import Manager
+
+manager = Manager(connect, user="test", database="test", password="test")
 
 
-def connect() -> sql.Connection:
-    return sql.connect(user="test", database="test", password="test")
+def test_connect() -> None:
+    with manager.connect() as session:
+        session("CREATE TABLE IF NOT EXISTS test (test INTEGER)")
+        session("DROP TABLE IF EXISTS test")
 
 
 def test_storage() -> None:
