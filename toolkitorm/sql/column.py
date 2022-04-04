@@ -1,8 +1,8 @@
-from typing import Generic, Iterable, Optional, overload
+from typing import Generic, Optional, overload
 
 from toolkitorm import V
 from toolkitorm.sql.basistable import BasisTable
-from toolkitorm.sql.conditions import Condition
+from toolkitorm.sql.conditions import Condition, Eq, Ge, Gt, In, Is, Le, Lt, Ne
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Data
 from toolkitorm.sql.types import BaseType
@@ -75,29 +75,31 @@ class BaseColumn(Generic[V]):
 
     #! This violates the Liskov substitution principle
     def __eq__(self, value: object) -> Condition:  # type:ignore
-        return self.__dialect__.EQ(self.sql_name, self.value_type.to_sql(value))
+        return Eq(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def __ne__(self, value: object) -> Condition:  # type:ignore
-        return self.__dialect__.NE(self.sql_name, self.value_type.to_sql(value))
+        return Ne(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def __lt__(self, value: object) -> Condition:
-        return self.__dialect__.LT(self.sql_name, self.value_type.to_sql(value))
+        return Lt(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def __gt__(self, value: object) -> Condition:
-        return self.__dialect__.GT(self.sql_name, self.value_type.to_sql(value))
+        return Gt(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def __le__(self, value: object) -> Condition:
-        return self.__dialect__.LE(self.sql_name, self.value_type.to_sql(value))
+        return Le(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def __ge__(self, value: object) -> Condition:
-        return self.__dialect__.GE(self.sql_name, self.value_type.to_sql(value))
+        return Ge(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def IS(self, value: object) -> Condition:
-        return self.__dialect__.IS(self.sql_name, self.value_type.to_sql(value))
+        return Is(self.__dialect__, self.sql_name, self.value_type.to_sql(value))
 
     def IN(self, *values: object) -> Condition:
-        return self.__dialect__.IN(
-            self.sql_name, [self.value_type.to_sql(v) for v in values]
+        return In(
+            self.__dialect__,
+            self.sql_name,
+            [self.value_type.to_sql(v) for v in values],
         )
 
 

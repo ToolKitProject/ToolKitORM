@@ -1,21 +1,4 @@
-from typing import Any, TypeVar
-
-from toolkitorm.sql.conditions import (
-    And,
-    Condition,
-    Eq,
-    Ge,
-    Gt,
-    In,
-    Is,
-    Le,
-    Lt,
-    Ne,
-    Not,
-    Or,
-)
-
-C = type[Condition]
+from typing import Any
 
 
 class BaseDialect:
@@ -46,18 +29,18 @@ class BaseDialect:
     FALSE: tuple[str, ...] = ("FALSE", "0")
     NULL: str = "NULL"
 
-    NOT: type[Not] = Not
-    AND: type[And] = And
-    OR: type[Or] = Or
+    NOT: str = "NOT"
+    AND: str = "AND"
+    OR: str = "OR"
 
-    IS: type[Is] = Is
-    IN: type[In] = In
-    EQ: type[Eq] = Eq
-    NE: type[Ne] = Ne
-    GT: type[Gt] = Gt
-    LT: type[Lt] = Lt
-    GE: type[Ge] = Ge
-    LE: type[Le] = Le
+    IS: str = "IS"
+    IN: str = "IN"
+    EQ: str = "="
+    NE: str = "!="
+    GT: str = ">"
+    LT: str = "<"
+    GE: str = ">="
+    LE: str = "<="
 
     def name(self, sql: str) -> str:
         return f"{self.NAME}{sql}{self.NAME}"

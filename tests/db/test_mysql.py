@@ -45,6 +45,6 @@ def test_storage() -> None:
 
 def test_conditions() -> None:
     assert (
-        not_(and_(Test.num >= 10, Test.txt.IN("test", 123))).to_sql()
+        str(not_(and_(Test.num >= 10, Test.txt.IN("test", 123))))
         == "NOT (`test`.`num` >= 10 AND `test`.`txt` IN ('test','123'))"
     )
