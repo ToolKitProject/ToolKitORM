@@ -1,7 +1,7 @@
-from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.basistable import BasisTable
 from toolkitorm.sql.column import BaseColumn
 from toolkitorm.sql.columns import Columns
+from toolkitorm.sql.dialect import BaseDialect
 
 
 class BaseTable(BasisTable):

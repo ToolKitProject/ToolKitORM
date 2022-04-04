@@ -1,6 +1,5 @@
 from toolkitorm import V
-from toolkitorm.orm.mysql.dialect import MySQLDialect
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.orm.mysql.dialect import DialectMixin
 from toolkitorm.sql.types import (
     BaseAny,
     BaseBool,
@@ -17,104 +16,100 @@ from toolkitorm.sql.types import (
 )
 
 
-class TypeDialectMixin:
-    __dialect__: BaseDialect = MySQLDialect()
-
-
 # Built-in types
-class Tinyint(BaseInteger, TypeDialectMixin):
+class Tinyint(BaseInteger, DialectMixin):
     pass
 
 
-class Smallint(BaseInteger, TypeDialectMixin):
+class Smallint(BaseInteger, DialectMixin):
     pass
 
 
-class Mediumint(BaseInteger, TypeDialectMixin):
+class Mediumint(BaseInteger, DialectMixin):
     pass
 
 
-class Integer(BaseInteger, TypeDialectMixin):
+class Integer(BaseInteger, DialectMixin):
     pass
 
 
-class Biginteger(BaseInteger, TypeDialectMixin):
+class Biginteger(BaseInteger, DialectMixin):
     pass
 
 
-class Decimal(BaseDecimal, TypeDialectMixin):
+class Decimal(BaseDecimal, DialectMixin):
     def __init__(self, precision: int, scale: int) -> None:
         super().__init__(precision, scale)
 
 
-class Float(BaseFloat, TypeDialectMixin):
+class Float(BaseFloat, DialectMixin):
     pass
 
 
-class Double(BaseFloat, TypeDialectMixin):
+class Double(BaseFloat, DialectMixin):
     pass
 
 
-class Date(BaseDate, TypeDialectMixin):
+class Date(BaseDate, DialectMixin):
     pass
 
 
-class Time(BaseTime, TypeDialectMixin):
+class Time(BaseTime, DialectMixin):
     pass
 
 
-class Datetime(BaseDatetime, TypeDialectMixin):
+class Datetime(BaseDatetime, DialectMixin):
     pass
 
 
-class Timestamp(BaseDatetime, TypeDialectMixin):
+class Timestamp(BaseDatetime, DialectMixin):
     pass
 
 
-class Char(BaseString, TypeDialectMixin):
+class Char(BaseString, DialectMixin):
     def __init__(self, length: int) -> None:
         super().__init__(length)
 
 
-class Varchar(BaseString, TypeDialectMixin):
+class Varchar(BaseString, DialectMixin):
     def __init__(self, length: int) -> None:
         super().__init__(length)
 
 
-class Tinytext(BaseString, TypeDialectMixin):
+class Tinytext(BaseString, DialectMixin):
     pass
 
 
-class Text(BaseString, TypeDialectMixin):
+class Text(BaseString, DialectMixin):
     pass
 
 
-class Mediumtext(BaseString, TypeDialectMixin):
+class Mediumtext(BaseString, DialectMixin):
     pass
 
 
-class Longtext(BaseString, TypeDialectMixin):
+class Longtext(BaseString, DialectMixin):
     pass
 
 
-class JSON(BaseDict[V], TypeDialectMixin):
+class JSON(BaseDict[V], DialectMixin):
     pass
 
 
 # ORM types
-class Dynamic(BaseAny, TypeDialectMixin):
+class Dynamic(BaseAny, DialectMixin):
     __type_name__ = Longtext().__type_name__
 
 
-class Boolean(BaseBool, TypeDialectMixin):
+class Boolean(BaseBool, DialectMixin):
     __type_name__ = Tinyint().__type_name__
 
 
-class List(BaseList[V], TypeDialectMixin):
+class List(BaseList[V], DialectMixin):
     __type_name__ = Longtext().__type_name__
 
 
-class Timedelta(BaseTimedelta, TypeDialectMixin):
+class Timedelta(BaseTimedelta, DialectMixin):
     __type_name__ = Tinytext().__type_name__
 
 

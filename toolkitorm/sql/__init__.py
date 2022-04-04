@@ -1,9 +1,9 @@
-__version__ = "0.1.0"
+# isort: skip_file
+from . import conditions
 from . import dialect
 from . import types
 from . import storage
 from . import basistable
-from . import conditions
 from . import column
 
 from . import columns

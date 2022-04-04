@@ -1,6 +1,6 @@
 from typing import ClassVar
 from toolkitorm.sql.dialect import BaseDialect
-from .storage import Storage
+from toolkitorm.sql.storage import Storage
 
 
 class BasisTable:
@@ -14,6 +14,8 @@ class BasisTable:
     ) -> None:
         if table is not None:
             cls.__table__ = table
+        else:
+            cls.__table__ = cls.__name__.lower()
         if dialect is not None:
             cls.__dialect__ = dialect
 
@@ -21,8 +23,8 @@ class BasisTable:
         assert hasattr(self, "__dialect__")  # TODO
         self.__storage__ = Storage()
 
-    @property
     @classmethod
+    @property
     def sql_name(cls) -> str:
         return cls.__dialect__.name(cls.__table__)
 

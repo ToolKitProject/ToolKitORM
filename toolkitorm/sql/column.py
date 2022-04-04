@@ -75,46 +75,29 @@ class BaseColumn(Generic[V]):
 
     #! This violates the Liskov substitution principle
     def __eq__(self, value: object) -> Condition:  # type:ignore
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.EQ, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.EQ(self.sql_name, self.value_type.to_sql(value))
 
     def __ne__(self, value: object) -> Condition:  # type:ignore
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.NE, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.NE(self.sql_name, self.value_type.to_sql(value))
 
     def __lt__(self, value: object) -> Condition:
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.LT, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.LT(self.sql_name, self.value_type.to_sql(value))
 
     def __gt__(self, value: object) -> Condition:
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.GT, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.GT(self.sql_name, self.value_type.to_sql(value))
 
     def __le__(self, value: object) -> Condition:
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.LE, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.LE(self.sql_name, self.value_type.to_sql(value))
 
     def __ge__(self, value: object) -> Condition:
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.GE, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.GE(self.sql_name, self.value_type.to_sql(value))
 
     def IS(self, value: object) -> Condition:
-        return Condition(
-            self.table, self.sql_name, self.__dialect__.IS, self.value_type.to_sql(value)
-        )
+        return self.__dialect__.IS(self.sql_name, self.value_type.to_sql(value))
 
     def IN(self, *values: object) -> Condition:
-        return Condition(
-            self.table,
-            self.sql_name,
-            self.__dialect__.IN,
-            f'({",".join([self.value_type.to_sql(v) for v in values])})',
+        return self.__dialect__.IN(
+            self.sql_name, [self.value_type.to_sql(v) for v in values]
         )
 
 

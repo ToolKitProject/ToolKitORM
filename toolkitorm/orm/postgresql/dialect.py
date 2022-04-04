@@ -1,11 +1,15 @@
 from toolkitorm.sql.dialect import BaseDialect
 
 
-class PostgreSQLDialect(BaseDialect):
+class Dialect(BaseDialect):
     def __init__(self) -> None:
         super().__init__()
 
         self.NAME = '"'
 
 
-__all__ = ["PostgreSQLDialect"]
+class DialectMixin:
+    __dialect__: BaseDialect = Dialect()
+
+
+__all__ = ["Dialect", "DialectMixin"]

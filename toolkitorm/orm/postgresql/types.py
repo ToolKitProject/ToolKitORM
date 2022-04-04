@@ -1,6 +1,5 @@
 from toolkitorm import V
-from toolkitorm.orm.postgresql.dialect import PostgreSQLDialect
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.orm.postgresql.dialect import DialectMixin
 from toolkitorm.sql.types import (
     BaseAny,
     BaseBool,
@@ -17,92 +16,88 @@ from toolkitorm.sql.types import (
 )
 
 
-class TypeDialectMixin:
-    __dialect__: BaseDialect = PostgreSQLDialect()
-
-
 # Built-in types
-class Smallint(BaseInteger, TypeDialectMixin):
+class Smallint(BaseInteger, DialectMixin):
     pass
 
 
-class Integer(BaseInteger, TypeDialectMixin):
+class Integer(BaseInteger, DialectMixin):
     pass
 
 
-class Bigint(BaseInteger, TypeDialectMixin):
+class Bigint(BaseInteger, DialectMixin):
     pass
 
 
-class Decimal(BaseDecimal, TypeDialectMixin):
+class Decimal(BaseDecimal, DialectMixin):
     def __init__(self, precision: int, scale: int) -> None:
         super().__init__(precision, scale)
 
 
-class Real(BaseFloat, TypeDialectMixin):
+class Real(BaseFloat, DialectMixin):
     pass
 
 
-class Double(BaseFloat, TypeDialectMixin):
+class Double(BaseFloat, DialectMixin):
     __type_name__ = "double precision"
 
 
-class Varchar(BaseString, TypeDialectMixin):
+class Varchar(BaseString, DialectMixin):
     def __init__(self, length: int) -> None:
         super().__init__(length)
 
 
-class Char(BaseString, TypeDialectMixin):
+class Char(BaseString, DialectMixin):
     def __init__(self, length: int) -> None:
         super().__init__(length)
 
 
-class Text(BaseString, TypeDialectMixin):
+class Text(BaseString, DialectMixin):
     pass
 
 
-class Timestamp(BaseDatetime, TypeDialectMixin):
+class Timestamp(BaseDatetime, DialectMixin):
     pass
 
 
-class TimestampTZ(BaseDatetime, TypeDialectMixin):
+class TimestampTZ(BaseDatetime, DialectMixin):
     pass
 
 
-class Date(BaseDate, TypeDialectMixin):
+class Date(BaseDate, DialectMixin):
     pass
 
 
-class Time(BaseTime, TypeDialectMixin):
+class Time(BaseTime, DialectMixin):
     pass
 
 
-class TimeTZ(BaseTime, TypeDialectMixin):
+class TimeTZ(BaseTime, DialectMixin):
     pass
 
 
-class Interval(BaseTimedelta, TypeDialectMixin):
+class Interval(BaseTimedelta, DialectMixin):
     pass
 
 
-class Boolean(BaseBool, TypeDialectMixin):
+class Boolean(BaseBool, DialectMixin):
     pass
 
 
-class JSON(BaseDict[V], TypeDialectMixin):
+class JSON(BaseDict[V], DialectMixin):
     pass
 
 
-class JSONB(BaseDict[V], TypeDialectMixin):
+class JSONB(BaseDict[V], DialectMixin):
     pass
 
 
 # ORM types
-class Dynamic(BaseAny, TypeDialectMixin):
+class Dynamic(BaseAny, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class List(BaseList[V], TypeDialectMixin):
+class List(BaseList[V], DialectMixin):
     __type_name__ = Text().__type_name__
 
 

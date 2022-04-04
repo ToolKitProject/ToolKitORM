@@ -1,8 +1,12 @@
 from toolkitorm.sql.dialect import BaseDialect
 
 
-class MySQLDialect(BaseDialect):
+class Dialect(BaseDialect):
     pass
 
 
-__all__ = ["MySQLDialect"]
+class DialectMixin:
+    __dialect__: BaseDialect = Dialect()
+
+
+__all__ = ["Dialect", "DialectMixin"]

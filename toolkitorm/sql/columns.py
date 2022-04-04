@@ -1,7 +1,7 @@
 from typing import Callable
 
-from .basistable import BasisTable
-from .column import BaseColumn
+from toolkitorm.sql.basistable import BasisTable
+from toolkitorm.sql.column import BaseColumn
 
 
 class Columns:

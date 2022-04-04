@@ -1,9 +1,7 @@
 {
-	"All dict": {
-		"prefix": "__all__",
-		"body": [
-			"__all__ = [$0]"
-		],
-		"description": "All dict"
-	}
+  "All dict": {
+    "prefix": "__all__",
+    "body": ["__all__ = [$0]"],
+    "description": "All dict"
+  }
 }

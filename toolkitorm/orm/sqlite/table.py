@@ -1,9 +1,9 @@
-from toolkitorm.orm.sqlite.dialect import SQLiteDialect
+from toolkitorm.orm.sqlite.dialect import DialectMixin
 from toolkitorm.sql.table import BaseTable
 
 
-class Table(BaseTable):
-    __dialect__ = SQLiteDialect()
+class Table(BaseTable, DialectMixin):
+    pass
 
 
 __all__ = ["Table"]

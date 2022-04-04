@@ -1,7 +1,7 @@
 from typing import Any, Literal
 
 from toolkitorm import V
-from toolkitorm.request.cursor import Cursor
+from toolkitorm.db.cursor import Cursor
 
 
 class Session:
@@ -13,7 +13,11 @@ class Session:
     def __enter__(self) -> "Session":
         return self
 
-    def __exit__(self, *args: object) -> Literal[False]:
+    def __exit__(self, err: object | None, *_: object) -> Literal[False]:
+        if err is None:
+            self.commit()
+        else:
+            self.rollback()
         return False
 
     def close(self) -> None:
@@ -30,21 +34,19 @@ class Session:
 
     def execute(self, sql: str) -> None:
         with self.cursor() as cursor:
-            cursor(sql)
+            cursor.execute(sql)
 
     def one(self, sql: str) -> tuple[V] | None:
         with self.cursor() as cursor:
-            return cursor(sql).one()
+            return cursor.execute(sql).one()
 
     def many(self, sql: str, size: int) -> list[tuple[V]]:
         with self.cursor() as cursor:
-            return cursor(sql).many(size)
+            return cursor.execute(sql).many(size)
 
     def all(self, sql: str) -> list[tuple[V]]:
         with self.cursor() as cursor:
-            return cursor(sql).all()
-
-    __call__ = execute
+            return cursor.execute(sql).all()
 
 
 __all__ = ["Session"]

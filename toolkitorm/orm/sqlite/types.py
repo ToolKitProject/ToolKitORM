@@ -1,6 +1,5 @@
 from toolkitorm import V
-from toolkitorm.orm.sqlite.dialect import SQLiteDialect
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.orm.sqlite.dialect import DialectMixin
 from toolkitorm.sql.types import (
     BaseAny,
     BaseBool,
@@ -17,57 +16,53 @@ from toolkitorm.sql.types import (
 )
 
 
-class TypeDialectMixin:
-    __dialect__: BaseDialect = SQLiteDialect()
-
-
 # Built-in types
-class Integer(BaseInteger, TypeDialectMixin):
+class Integer(BaseInteger, DialectMixin):
     pass
 
 
-class Real(BaseFloat, TypeDialectMixin):
+class Real(BaseFloat, DialectMixin):
     pass
 
 
-class Text(BaseString, TypeDialectMixin):
+class Text(BaseString, DialectMixin):
     pass
 
 
-class Blob(BaseAny, TypeDialectMixin):
+class Blob(BaseAny, DialectMixin):
     pass
 
 
 # ORM types
-class Boolean(BaseBool, TypeDialectMixin):
+class Boolean(BaseBool, DialectMixin):
     __type_name__ = Integer().__type_name__
 
 
-class Decimal(BaseDecimal, TypeDialectMixin):
+class Decimal(BaseDecimal, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class Time(BaseTime, TypeDialectMixin):
+class Time(BaseTime, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class Date(BaseDate, TypeDialectMixin):
+class Date(BaseDate, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class Datetime(BaseDatetime, TypeDialectMixin):
+class Datetime(BaseDatetime, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class Timedelta(BaseTimedelta, TypeDialectMixin):
+class Timedelta(BaseTimedelta, DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class Dict(BaseDict[V], TypeDialectMixin):
+class Dict(BaseDict[V], DialectMixin):
     __type_name__ = Text().__type_name__
 
 
-class List(BaseList[V], TypeDialectMixin):
+class List(BaseList[V], DialectMixin):
     __type_name__ = Text().__type_name__
 
 

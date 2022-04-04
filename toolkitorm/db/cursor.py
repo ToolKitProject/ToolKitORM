@@ -11,7 +11,7 @@ class Cursor:
     def __enter__(self) -> "Cursor":
         return self
 
-    def __exit__(self, *args: object) -> Literal[False]:
+    def __exit__(self, *_: object) -> Literal[False]:
         self.close()
         return False
 
@@ -30,8 +30,6 @@ class Cursor:
 
     def all(self) -> list[tuple[V]]:
         return self.__cursor.fetchall()
-
-    __call__ = execute
 
 
 __all__ = ["Cursor"]
