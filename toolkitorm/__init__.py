@@ -1,3 +1,4 @@
+# isort: skip_file
 """
 TODO: Add exceptions
 TODO: Add imports in toolkitorm.orm

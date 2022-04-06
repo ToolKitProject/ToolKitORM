@@ -13,7 +13,7 @@ class Session:
     def __enter__(self) -> "Session":
         return self
 
-    def __exit__(self, err: object | None, *_: object) -> Literal[False]:
+    def __exit__(self, err: Exception | None, *_: object) -> Literal[False]:
         if err is None:
             self.commit()
         else:

@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 
 from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.storage import Data
 
 
-class Condition(ABC):
+class BaseCondition(ABC):
     __dialect__: BaseDialect
 
     def __init__(self, dialect: BaseDialect) -> None:
@@ -15,10 +16,10 @@ class Condition(ABC):
     def __invert__(self) -> "Not":
         return Not(self.__dialect__, self)
 
-    def __and__(self, other: "Condition") -> "And":
+    def __and__(self, other: "BaseCondition") -> "And":
         return And(self.__dialect__, self, other)
 
-    def __or__(self, other: "Condition") -> "Or":
+    def __or__(self, other: "BaseCondition") -> "Or":
         return Or(self.__dialect__, self, other)
 
     @abstractmethod
@@ -26,40 +27,42 @@ class Condition(ABC):
         pass
 
 
-class Logical(Condition):
-    left: Condition
+class Logical(BaseCondition):
+    left: BaseCondition
     action: str
-    right: Condition
+    right: BaseCondition
 
-    def __init__(self, dialect: BaseDialect, l: Condition, a: str, r: Condition) -> None:
+    def __init__(
+        self, dialect: BaseDialect, l: BaseCondition, a: str, r: BaseCondition
+    ) -> None:
         super().__init__(dialect)
         self.left = l
         self.action = a
         self.right = r
 
     def to_sql(self) -> str:
-        return f"{self.left.to_sql()} {self.action} {self.right.to_sql()}"
+        return f"({self.left.to_sql()}) {self.action} ({self.right.to_sql()})"
 
 
-class Compression(Condition):
+class Comparison(BaseCondition):
     left: str
     action: str
-    right: str
+    right: Data
 
-    def __init__(self, dialect: BaseDialect, l: str, a: str, r: str) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, a: str, r: Data) -> None:
         super().__init__(dialect)
         self.left = l
         self.action = a
         self.right = r
 
     def to_sql(self) -> str:
-        return f"{self.left} {self.action} {self.right}"
+        return f"{self.left} {self.action} {self.right.to_sql()}"
 
 
-class Not(Condition):
-    condition: Condition
+class Not(BaseCondition):
+    condition: BaseCondition
 
-    def __init__(self, dialect: BaseDialect, c: Condition) -> None:
+    def __init__(self, dialect: BaseDialect, c: BaseCondition) -> None:
         super().__init__(dialect)
         self.condition = c
 
@@ -68,69 +71,79 @@ class Not(Condition):
 
 
 class And(Logical):
-    def __init__(self, dialect: BaseDialect, l: Condition, r: Condition) -> None:
+    def __init__(self, dialect: BaseDialect, l: BaseCondition, r: BaseCondition) -> None:
         super().__init__(dialect, l, dialect.AND, r)
 
 
 class Or(Logical):
-    def __init__(self, dialect: BaseDialect, l: Condition, r: Condition) -> None:
+    def __init__(self, dialect: BaseDialect, l: BaseCondition, r: BaseCondition) -> None:
         super().__init__(dialect, l, dialect.OR, r)
 
 
-class Eq(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Eq(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.EQ, r)
 
 
-class Ne(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
-        super().__init__(dialect, l, dialect.EQ, r)
+class Ne(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
+        super().__init__(dialect, l, dialect.NE, r)
 
 
-class Gt(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Gt(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.GT, r)
 
 
-class Lt(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Lt(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.LT, r)
 
 
-class Ge(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Ge(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.GE, r)
 
 
-class Le(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Le(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.LE, r)
 
 
-class Is(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: str) -> None:
+class Is(Comparison):
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.IS, r)
 
 
-class In(Compression):
-    def __init__(self, dialect: BaseDialect, l: str, r: list[str]) -> None:
-        super().__init__(dialect, l, dialect.IN, f"({','.join(r)})")
+class In(BaseCondition):
+    left: str
+    action: str
+    right: list[Data]
+
+    def __init__(self, dialect: BaseDialect, l: str, r: list[Data]) -> None:
+        super().__init__(dialect)
+        self.left = l
+        self.action = dialect.IN
+        self.right = r
+
+    def to_sql(self) -> str:
+        return f"{self.left} {self.__dialect__.IN} ({','.join([d.to_sql() for d in self.right])})"
 
 
-def not_(c: Condition) -> Not:
+def not_(c: BaseCondition) -> Not:
     return ~c
 
 
-def and_(l: Condition, r: Condition) -> And:
+def and_(l: BaseCondition, r: BaseCondition) -> And:
     return l & r
 
 
-def or_(l: Condition, r: Condition) -> Or:
+def or_(l: BaseCondition, r: BaseCondition) -> Or:
     return l | r
 
 
 __all__ = [
-    "Condition",
+    "BaseCondition",
     "not_",
     "and_",
     "or_",

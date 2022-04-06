@@ -55,7 +55,7 @@ class BaseType(Generic[V], ABC):
     @property
     def sql_name(self) -> str:
         """Return name of the SQL type"""
-        args = ",".join(map(repr, self.__args__))
+        args = ",".join([str(a) for a in self.__args__])
         return f"{self.__type_name__.upper()}({args})"
 
     @abstractmethod

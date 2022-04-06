@@ -12,6 +12,7 @@ from toolkitorm.orm.sqlite import (
     Text,
     and_,
     not_,
+    or_,
 )
 
 factory = SessionFactory(connect, "database.sqlite")
@@ -43,7 +44,21 @@ def test_storage() -> None:
 
 
 def test_conditions() -> None:
+    assert str(Test.num == 1) == "`test`.`num` = 1"
+    assert str(Test.num != 1) == "`test`.`num` != 1"
+    assert str(Test.num > 1) == "`test`.`num` > 1"
+    assert str(Test.num < 1) == "`test`.`num` < 1"
+    assert str(Test.num >= 1) == "`test`.`num` >= 1"
+    assert str(Test.num <= 1) == "`test`.`num` <= 1"
+    assert str(Test.num.IN(1, 2, 3, 4, 5)) == "`test`.`num` IN (1,2,3,4,5)"
+    assert str(Test.num.IS("null")) == "`test`.`num` IS NULL"
+
+    assert str(not_(Test.num == 1)) == "NOT (`test`.`num` = 1)"
     assert (
-        str(not_(and_(Test.num >= 10, Test.txt.IN("test", 123))))
-        == "NOT (`test`.`num` >= 10 AND `test`.`txt` IN ('test','123'))"
+        str(and_(Test.num == 1, Test.num == 2))
+        == "(`test`.`num` = 1) AND (`test`.`num` = 2)"
+    )
+    assert (
+        str(or_(Test.num == 1, Test.num == 2))
+        == "(`test`.`num` = 1) OR (`test`.`num` = 2)"
     )
