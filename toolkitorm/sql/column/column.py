@@ -1,8 +1,7 @@
 from typing import Generic, Optional, overload
 
-from toolkitorm import V
-from toolkitorm.sql.basistable import BasisTable
-from toolkitorm.sql.conditions import BaseCondition, Eq, Ge, Gt, In, Is, Le, Lt, Ne
+from toolkitorm import V, sql
+from toolkitorm.sql.condition import BaseCondition, Eq, Ge, Gt, In, Is, Le, Lt, Ne
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Data
 from toolkitorm.sql.types import BaseType
@@ -13,7 +12,7 @@ class BaseColumn(Generic[V]):
 
     __dialect__: BaseDialect
 
-    table: type[BasisTable]
+    table: type["sql.table.BaseTable"]
     name: str
     value_type: BaseType[V]
     default: V | None
@@ -47,26 +46,32 @@ class BaseColumn(Generic[V]):
             self.nullable = True
             self.unique = True
 
-    def __set_name__(self, owner: type[BasisTable], name: str) -> None:
+    def __set_name__(self, owner: type["sql.table.BaseTable"], name: str) -> None:
         self.table = owner
         self.name = name
 
     @overload
-    def __get__(self, instance: BasisTable, owner: type[BasisTable]) -> V | None:
+    def __get__(
+        self, instance: "sql.table.BaseTable", owner: type["sql.table.BaseTable"]
+    ) -> V | None:
         ...
 
     @overload
-    def __get__(self, instance: None, owner: type[BasisTable]) -> "BaseColumn[V]":
+    def __get__(
+        self, instance: None, owner: type["sql.table.BaseTable"]
+    ) -> "BaseColumn[V]":
         ...
 
     def __get__(
-        self, instance: BasisTable | None, owner: type[BasisTable]
+        self,
+        instance: Optional["sql.table.BaseTable"],
+        owner: type["sql.table.BaseTable"],
     ) -> V | "BaseColumn[V]" | None:
         if instance is None:
             return self
         return self.data(instance).get()
 
-    def data(self, instance: BasisTable) -> Data[V]:
+    def data(self, instance: "sql.table.BaseTable") -> Data[V]:
         return instance.__storage__.get(self.name)
 
     @property

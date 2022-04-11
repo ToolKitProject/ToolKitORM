@@ -19,7 +19,7 @@ from toolkitorm.orm.postgresql import (
 factory = SessionFactory(connect, user="test", database="test", password="test")
 
 
-class Test(Table):
+class TableTest(Table, table="test"):
     true = Column(Boolean())
     false = Column(Boolean())
     json = Column(JSON[str]())
@@ -35,7 +35,7 @@ def test_connect() -> None:
 
 
 def test_storage() -> None:
-    t = Test("TrUe", "0", '{"a":123}', "2001-09-11 05:05:00", "456231", 123)
+    t = TableTest("TrUe", "0", '{"a":123}', "2001-09-11 05:05:00", "456231", 123)
     assert t.true is True
     assert t.false is False
     assert t.json == {"a": 123}
@@ -45,21 +45,21 @@ def test_storage() -> None:
 
 
 def test_conditions() -> None:
-    assert str(Test.num == 1) == '"test"."num" = 1'
-    assert str(Test.num != 1) == '"test"."num" != 1'
-    assert str(Test.num > 1) == '"test"."num" > 1'
-    assert str(Test.num < 1) == '"test"."num" < 1'
-    assert str(Test.num >= 1) == '"test"."num" >= 1'
-    assert str(Test.num <= 1) == '"test"."num" <= 1'
-    assert str(Test.num.IN(1, 2, 3, 4, 5)) == '"test"."num" IN (1,2,3,4,5)'
-    assert str(Test.num.IS("null")) == '"test"."num" IS NULL'
+    assert str(TableTest.num == 1) == '"test"."num" = 1'
+    assert str(TableTest.num != 1) == '"test"."num" != 1'
+    assert str(TableTest.num > 1) == '"test"."num" > 1'
+    assert str(TableTest.num < 1) == '"test"."num" < 1'
+    assert str(TableTest.num >= 1) == '"test"."num" >= 1'
+    assert str(TableTest.num <= 1) == '"test"."num" <= 1'
+    assert str(TableTest.num.IN(1, 2, 3, 4, 5)) == '"test"."num" IN (1,2,3,4,5)'
+    assert str(TableTest.num.IS("null")) == '"test"."num" IS NULL'
 
-    assert str(not_(Test.num == 1)) == 'NOT ("test"."num" = 1)'
+    assert str(not_(TableTest.num == 1)) == 'NOT ("test"."num" = 1)'
     assert (
-        str(and_(Test.num == 1, Test.num == 2))
+        str(and_(TableTest.num == 1, TableTest.num == 2))
         == '("test"."num" = 1) AND ("test"."num" = 2)'
     )
     assert (
-        str(or_(Test.num == 1, Test.num == 2))
+        str(or_(TableTest.num == 1, TableTest.num == 2))
         == '("test"."num" = 1) OR ("test"."num" = 2)'
     )

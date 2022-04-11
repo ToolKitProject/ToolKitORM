@@ -1,14 +1,16 @@
 from typing import Callable
 
-from toolkitorm.sql.basistable import BasisTable
+from toolkitorm import sql
 from toolkitorm.sql.column import BaseColumn
 
 
 class Columns:
-    table: BasisTable
+    table: "sql.table.BaseTable"
     all: list[BaseColumn]
 
-    def __init__(self, table: BasisTable, columns: list[BaseColumn] = []) -> None:
+    def __init__(
+        self, table: "sql.table.BaseTable", columns: list[BaseColumn] = []
+    ) -> None:
         self.table = table
         self.all = columns.copy()
 
@@ -20,7 +22,9 @@ class Columns:
         for c in columns:
             self.all.remove(c)
 
-    def filter(self, func: Callable[[BaseColumn, BasisTable], bool]) -> "Columns":
+    def filter(
+        self, func: Callable[[BaseColumn, "sql.table.BaseTable"], bool]
+    ) -> "Columns":
         return Columns(self.table, [c for c in self.all if func(c, self.table)])
 
     # Value management

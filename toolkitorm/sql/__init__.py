@@ -2,21 +2,15 @@
 from . import dialect
 from . import types
 from . import storage
-from . import basistable
-from . import conditions
+from . import condition
 from . import column
-
-from . import columns
 from . import table
 
-
 __all__ = [
-    "types",
     "dialect",
+    "types",
     "storage",
-    "basistable",
-    "conditions",
+    "condition",
     "column",
-    "columns",
     "table",
 ]
