@@ -29,6 +29,12 @@ class BaseDialect:
     FALSE: tuple[str, ...] = ("FALSE", "0")
     NULL: str = "NULL"
 
+    ADD: str = "+"
+    SUB: str = "-"
+    MUL: str = "*"
+    DIV: str = "/"
+    MOD: str = "%"
+
     NOT: str = "NOT"
     AND: str = "AND"
     OR: str = "OR"

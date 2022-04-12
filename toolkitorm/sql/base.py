@@ -1,6 +1,7 @@
-from typing import ClassVar
-from toolkitorm import sql
 from abc import ABC, abstractmethod
+from typing import ClassVar
+
+from toolkitorm import sql
 
 
 class HasSQL(ABC):

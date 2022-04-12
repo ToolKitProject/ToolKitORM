@@ -1,5 +1,4 @@
 from toolkitorm.sql.base import HasDialect, HasName
-
 from toolkitorm.sql.column import BaseColumn, Columns
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Storage

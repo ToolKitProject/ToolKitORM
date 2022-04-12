@@ -2,8 +2,21 @@ from typing import Generic, Optional, overload
 
 from toolkitorm import V, sql
 from toolkitorm.sql.base import HasDialect, HasName
-from toolkitorm.sql.condition import BaseCondition, Eq, Ge, Gt, In, Is, Le, Lt, Ne
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.operator import (
+    Add,
+    Div,
+    Eq,
+    Ge,
+    Gt,
+    In,
+    Is,
+    Le,
+    Lt,
+    Mod,
+    Mul,
+    Ne,
+    Sub,
+)
 from toolkitorm.sql.storage import Data
 from toolkitorm.sql.types import BaseType
 
@@ -76,28 +89,43 @@ class BaseColumn(HasName, HasDialect, Generic[V]):
         return f"{self.table.sql_name}.{self.__dialect__.name(self.name)}"
 
     #! This violates the Liskov substitution principle
-    def __eq__(self, value: object) -> BaseCondition:  # type:ignore
+    def __add__(self, value: object) -> Add:  # type:ignore
+        return Add(self.__dialect__, self.sql_name, Data(self.value_type, value))
+
+    def __sub__(self, value: object) -> Sub:  # type:ignore
+        return Sub(self.__dialect__, self.sql_name, Data(self.value_type, value))
+
+    def __mul__(self, value: object) -> Mul:  # type:ignore
+        return Mul(self.__dialect__, self.sql_name, Data(self.value_type, value))
+
+    def __truediv__(self, value: object) -> Div:  # type:ignore
+        return Div(self.__dialect__, self.sql_name, Data(self.value_type, value))
+
+    def __mod__(self, value: object) -> Mod:  # type:ignore
+        return Mod(self.__dialect__, self.sql_name, Data(self.value_type, value))
+
+    def __eq__(self, value: object) -> Eq:  # type:ignore
         return Eq(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def __ne__(self, value: object) -> BaseCondition:  # type:ignore
+    def __ne__(self, value: object) -> Ne:  # type:ignore
         return Ne(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def __lt__(self, value: object) -> BaseCondition:
+    def __lt__(self, value: object) -> Lt:
         return Lt(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def __gt__(self, value: object) -> BaseCondition:
+    def __gt__(self, value: object) -> Gt:
         return Gt(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def __le__(self, value: object) -> BaseCondition:
+    def __le__(self, value: object) -> Le:
         return Le(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def __ge__(self, value: object) -> BaseCondition:
+    def __ge__(self, value: object) -> Ge:
         return Ge(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def IS(self, value: object) -> BaseCondition:
+    def IS(self, value: object) -> Is:
         return Is(self.__dialect__, self.sql_name, Data(self.value_type, value))
 
-    def IN(self, *values: object) -> BaseCondition:
+    def IN(self, *values: object) -> In:
         return In(
             self.__dialect__,
             self.sql_name,

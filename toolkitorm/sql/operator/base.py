@@ -6,21 +6,39 @@ from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Data
 
 
-class BaseCondition(HasSQL, HasDialect, ABC):
+class BaseOperator(HasSQL, HasDialect, ABC):
     def __init__(self, dialect: BaseDialect) -> None:
         self.__dialect__ = dialect
 
     def __str__(self) -> str:
         return self.to_sql()
 
-    def __invert__(self) -> "sql.condition.Not":
-        return sql.condition.Not(self.__dialect__, self)
 
-    def __and__(self, other: "BaseCondition") -> "sql.condition.And":
-        return sql.condition.And(self.__dialect__, self, other)
+class BaseCondition(BaseOperator, ABC):
+    def __invert__(self) -> "sql.operator.Not":
+        return sql.operator.Not(self.__dialect__, self)
 
-    def __or__(self, other: "BaseCondition") -> "sql.condition.Or":
-        return sql.condition.Or(self.__dialect__, self, other)
+    def __and__(self, other: "BaseCondition") -> "sql.operator.And":
+        return sql.operator.And(self.__dialect__, self, other)
+
+    def __or__(self, other: "BaseCondition") -> "sql.operator.Or":
+        return sql.operator.Or(self.__dialect__, self, other)
+
+
+class Math(BaseOperator, ABC):
+    left: Data | str
+    action: str
+    right: Data
+
+    def __init__(self, dialect: BaseDialect, l: Data | str, a: str, r: Data) -> None:
+        super().__init__(dialect)
+        self.left = l
+        self.action = a
+        self.right = r
+
+    def to_sql(self) -> str:
+        l = self.left.to_sql() if isinstance(self.left, Data) else self.left
+        return f"{l} {self.action} {self.right.to_sql()}"
 
 
 class Logical(BaseCondition):
@@ -57,6 +75,7 @@ class Comparison(BaseCondition):
 
 __all__ = [
     "BaseCondition",
+    "Math",
     "Logical",
     "Comparison",
 ]

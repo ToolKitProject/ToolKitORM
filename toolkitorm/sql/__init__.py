@@ -1,17 +1,18 @@
-# isort: skip_file
 from . import base
 from . import dialect
 from . import types
 from . import storage
-from . import condition
+from . import operator
 from . import column
 from . import table
+from . import query
 
 __all__ = [
     "dialect",
     "types",
     "storage",
-    "condition",
+    "operator",
     "column",
     "table",
+    "query",
 ]

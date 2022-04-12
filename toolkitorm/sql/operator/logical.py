@@ -1,5 +1,5 @@
-from toolkitorm.sql.condition import BaseCondition, Logical
 from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.operator import BaseCondition, Logical
 
 
 class Not(BaseCondition):

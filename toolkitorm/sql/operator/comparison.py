@@ -1,6 +1,6 @@
-from toolkitorm.sql.condition import Comparison
-from toolkitorm.sql.condition.base import BaseCondition
 from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.operator import Comparison
+from toolkitorm.sql.operator.base import BaseCondition
 from toolkitorm.sql.storage import Data
 
 
