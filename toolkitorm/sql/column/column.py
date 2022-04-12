@@ -1,17 +1,14 @@
 from typing import Generic, Optional, overload
 
 from toolkitorm import V, sql
+from toolkitorm.sql.base import HasDialect, HasName
 from toolkitorm.sql.condition import BaseCondition, Eq, Ge, Gt, In, Is, Le, Lt, Ne
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Data
 from toolkitorm.sql.types import BaseType
 
 
-class BaseColumn(Generic[V]):
-    """Column without dialect"""
-
-    __dialect__: BaseDialect
-
+class BaseColumn(HasName, HasDialect, Generic[V]):
     table: type["sql.table.BaseTable"]
     name: str
     value_type: BaseType[V]
@@ -108,4 +105,6 @@ class BaseColumn(Generic[V]):
         )
 
 
-__all__ = ["BaseColumn"]
+__all__ = [
+    "BaseColumn",
+]

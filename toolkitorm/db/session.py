@@ -49,4 +49,6 @@ class Session:
             return cursor.execute(sql).all()
 
 
-__all__ = ["Session"]
+__all__ = [
+    "Session",
+]

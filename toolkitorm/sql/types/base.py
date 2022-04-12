@@ -2,15 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Generic
 
 from toolkitorm import V
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.base import HasDialect, HasSQL
 
 
-class BaseType(Generic[V], ABC):
-    """Abstract class for SQL data types"""
-
+class BaseType(HasSQL, HasDialect, Generic[V], ABC):
     __type__: type[V]
     __type_name__: str
-    __dialect__: BaseDialect
     __args__: tuple[object, ...]
 
     def __init__(self, *args: object) -> None:
@@ -20,39 +17,24 @@ class BaseType(Generic[V], ABC):
         assert hasattr(self, "__dialect__")  # TODO
         self.__args__ = args
 
-    def convert(self, value: object) -> V | None:
-        """
-        Get any value and return python value (Implicit conversion)
-        """
-        if isinstance(value, self.__type__) or value is None:
-            return value
-        else:
-            return self.from_sql(str(value))
-
-    def to_sql(self, value: object) -> str:
-        """
-        Get python value and return 'repr SQL' value
-        """
-        v = self.convert(value)
-        if v is None:
+    def convert_to_sql(self, value: V | None) -> str:
+        if value is None:
             return self.__dialect__.NULL
         else:
-            return self._to(v)
+            return self._to(value)
 
-    def from_sql(self, sql: str) -> V | None:
-        """
-        Get 'not repr SQL' value and return python value
-        """
-        if sql.upper() == self.__dialect__.NULL:
+    def convert_from_sql(self, value: object) -> V | None:
+        if isinstance(value, self.__type__) or value is None:
+            return value
+        elif str(value).upper() == self.__dialect__.NULL:
             return None
         else:
-            return self._from(sql)
+            return self._from(str(value))
 
-    @property
-    def sql_name(self) -> str:
-        """Return name of the SQL type"""
-        args = ",".join([str(a) for a in self.__args__])
-        return f"{self.__type_name__.upper()}({args})"
+    def to_sql(self) -> str:
+        return (
+            f'{self.__type_name__.upper()}({",".join([str(a) for a in self.__args__])})'
+        )
 
     @abstractmethod
     def _to(self, value: V) -> str:
@@ -63,4 +45,6 @@ class BaseType(Generic[V], ABC):
         pass
 
 
-__all__ = ["BaseType"]
+__all__ = [
+    "BaseType",
+]

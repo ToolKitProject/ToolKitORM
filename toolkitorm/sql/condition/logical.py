@@ -25,4 +25,8 @@ class Or(Logical):
         super().__init__(dialect, l, dialect.OR, r)
 
 
-__all__ = ["Not", "And", "Or"]
+__all__ = [
+    "Not",
+    "And",
+    "Or",
+]

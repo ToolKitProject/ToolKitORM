@@ -52,3 +52,15 @@ class In(BaseCondition):
 
     def to_sql(self) -> str:
         return f"{self.left} {self.action} ({','.join([d.to_sql() for d in self.right])})"
+
+
+__all__ = [
+    "Eq",
+    "Ne",
+    "Gt",
+    "Lt",
+    "Ge",
+    "Le",
+    "Is",
+    "In",
+]

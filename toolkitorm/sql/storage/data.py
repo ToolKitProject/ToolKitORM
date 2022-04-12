@@ -1,10 +1,11 @@
 from typing import Generic
 
 from toolkitorm import V
+from toolkitorm.sql.base import HasSQL
 from toolkitorm.sql.types.base import BaseType
 
 
-class Data(Generic[V]):
+class Data(HasSQL, Generic[V]):
     value_type: BaseType[V]
     value: V | None
 
@@ -16,10 +17,12 @@ class Data(Generic[V]):
         return self.value
 
     def set(self, value: object) -> None:
-        self.value = self.value_type.convert(value)
+        self.value = self.value_type.convert_from_sql(value)
 
     def to_sql(self) -> str:
-        return self.value_type.to_sql(self.value)
+        return self.value_type.convert_to_sql(self.value)
 
 
-__all__ = ["Data"]
+__all__ = [
+    "Data",
+]

@@ -7,4 +7,6 @@ class Column(BaseColumn[V], DialectMixin):
     pass
 
 
-__all__ = ["Column"]
+__all__ = [
+    "Column",
+]

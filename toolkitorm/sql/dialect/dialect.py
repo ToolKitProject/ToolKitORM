@@ -53,4 +53,6 @@ class BaseDialect:
         return super().__getattribute__(name)
 
 
-__all__ = ["BaseDialect"]
+__all__ = [
+    "BaseDialect",
+]

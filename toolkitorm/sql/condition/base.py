@@ -1,13 +1,12 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from toolkitorm import sql
+from toolkitorm.sql.base import HasDialect, HasSQL
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Data
 
 
-class BaseCondition(ABC):
-    __dialect__: BaseDialect
-
+class BaseCondition(HasSQL, HasDialect, ABC):
     def __init__(self, dialect: BaseDialect) -> None:
         self.__dialect__ = dialect
 
@@ -22,10 +21,6 @@ class BaseCondition(ABC):
 
     def __or__(self, other: "BaseCondition") -> "sql.condition.Or":
         return sql.condition.Or(self.__dialect__, self, other)
-
-    @abstractmethod
-    def to_sql(self) -> str:
-        pass
 
 
 class Logical(BaseCondition):

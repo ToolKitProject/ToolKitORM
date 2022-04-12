@@ -32,4 +32,6 @@ class Cursor:
         return self.__cursor.fetchall()
 
 
-__all__ = ["Cursor"]
+__all__ = [
+    "Cursor",
+]

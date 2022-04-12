@@ -44,4 +44,6 @@ class Columns:
             column.data(self.table).set(value)
 
 
-__all__ = ["Columns"]
+__all__ = [
+    "Columns",
+]

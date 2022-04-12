@@ -1,4 +1,5 @@
 # isort: skip_file
+from . import base
 from . import dialect
 from . import types
 from . import storage

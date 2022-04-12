@@ -1,14 +1,13 @@
-from datetime import date, datetime, time, timedelta
+from toolkitorm.sql.base import HasDialect, HasName
 
 from toolkitorm.sql.column import BaseColumn, Columns
 from toolkitorm.sql.dialect import BaseDialect
 from toolkitorm.sql.storage import Storage
 
 
-class BaseTable:
+class BaseTable(HasName, HasDialect):
     __table__: str
     __storage__: Storage
-    __dialect__: BaseDialect
     __columns__: Columns
 
     def __init_subclass__(
@@ -46,4 +45,6 @@ class BaseTable:
         return cls.__dialect__.name(cls.__table__)
 
 
-__all__ = ["BaseTable"]
+__all__ = [
+    "BaseTable",
+]

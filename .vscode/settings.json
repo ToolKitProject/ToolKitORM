@@ -1,9 +1,9 @@
 {
-  "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
-  "python.formatting.provider": "black",
-  "python.testing.pytestArgs": ["tests", "-s"],
+  "python.linting.mypyEnabled": true,
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
+  "python.formatting.provider": "black",
+  "python.testing.pytestArgs": ["tests", "-s"],
   "cSpell.words": ["Liskov", "pymysql", "toolkitorm"]
 }

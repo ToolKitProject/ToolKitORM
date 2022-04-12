@@ -18,4 +18,6 @@ class Storage:
         self.storage[name] = Data(value_type)
 
 
-__all__ = ["Storage"]
+__all__ = [
+    "Storage",
+]

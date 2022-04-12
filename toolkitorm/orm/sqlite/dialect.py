@@ -1,12 +1,15 @@
-from toolkitorm.sql.dialect import BaseDialect
+from toolkitorm.sql.dialect import BaseDialect, BaseDialectMixin
 
 
 class Dialect(BaseDialect):
     pass
 
 
-class DialectMixin:
-    __dialect__: BaseDialect = Dialect()
+class DialectMixin(BaseDialectMixin):
+    __dialect__ = Dialect()
 
 
-__all__ = ["Dialect", "DialectMixin"]
+__all__ = [
+    "Dialect",
+    "DialectMixin",
+]

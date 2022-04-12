@@ -6,4 +6,4 @@ class Table(BaseTable, DialectMixin):
     pass
 
 
-__all__ = ["Table"]
+__all__ = ["Table",]

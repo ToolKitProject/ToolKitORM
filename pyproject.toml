@@ -36,4 +36,5 @@ disallow_untyped_calls = true
 
 [tool.isort]
 profile = "black"
-
+filter_files = true
+extend_skip = ["__init__.py"]

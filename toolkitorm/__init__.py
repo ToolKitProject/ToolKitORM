@@ -18,7 +18,6 @@ from . import db
 from . import orm
 
 __all__ = [
-    "utils",
     "sql",
     "db",
     "orm",

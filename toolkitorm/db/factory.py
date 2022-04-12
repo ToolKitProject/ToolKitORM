@@ -24,4 +24,6 @@ class SessionFactory:
         return Session(self.__connector(*self.__args, **self.__kwargs))
 
 
-__all__ = ["SessionFactory"]
+__all__ = [
+    "SessionFactory",
+]
