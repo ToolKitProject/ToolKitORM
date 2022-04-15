@@ -30,6 +30,7 @@ class BaseColumn(HasName, HasDialect, Generic[V]):
     auto: bool
     unique: bool
     primary: bool
+    commnet: str | None
     foreign: Optional["BaseColumn[V]"]
 
     def __init__(
@@ -40,6 +41,7 @@ class BaseColumn(HasName, HasDialect, Generic[V]):
         auto: bool = False,
         unique: bool = False,
         primary: bool = False,
+        comment: str | None = None,
         foreign: Optional["BaseColumn[V]"] = None,
     ) -> None:
         assert type(value_type.__dialect__) is type(self.__dialect__)
@@ -49,6 +51,7 @@ class BaseColumn(HasName, HasDialect, Generic[V]):
         self.auto = auto
         self.unique = unique
         self.primary = primary
+        self.commnet = comment
         self.foreign = foreign
         if self.auto:
             self.nullable = True
@@ -84,51 +87,50 @@ class BaseColumn(HasName, HasDialect, Generic[V]):
     def data(self, instance: "sql.table.BaseTable") -> Data[V]:
         return instance.__storage__.get(self.name)
 
-    @property
     def sql_name(self) -> str:
-        return f"{self.table.sql_name}.{self.__dialect__.name(self.name)}"
+        return f"{self.table.sql_name()}.{self.__dialect__.name(self.name)}"
 
     #! This violates the Liskov substitution principle
     def __add__(self, value: object) -> Add:  # type:ignore
-        return Add(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Add(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __sub__(self, value: object) -> Sub:  # type:ignore
-        return Sub(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Sub(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __mul__(self, value: object) -> Mul:  # type:ignore
-        return Mul(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Mul(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __truediv__(self, value: object) -> Div:  # type:ignore
-        return Div(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Div(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __mod__(self, value: object) -> Mod:  # type:ignore
-        return Mod(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Mod(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __eq__(self, value: object) -> Eq:  # type:ignore
-        return Eq(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Eq(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __ne__(self, value: object) -> Ne:  # type:ignore
-        return Ne(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Ne(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __lt__(self, value: object) -> Lt:
-        return Lt(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Lt(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __gt__(self, value: object) -> Gt:
-        return Gt(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Gt(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __le__(self, value: object) -> Le:
-        return Le(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Le(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def __ge__(self, value: object) -> Ge:
-        return Ge(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Ge(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def IS(self, value: object) -> Is:
-        return Is(self.__dialect__, self.sql_name, Data(self.value_type, value))
+        return Is(self.__dialect__, self.sql_name(), Data(self.value_type, value))
 
     def IN(self, *values: object) -> In:
         return In(
             self.__dialect__,
-            self.sql_name,
+            self.sql_name(),
             [Data(self.value_type, v) for v in values],
         )
 

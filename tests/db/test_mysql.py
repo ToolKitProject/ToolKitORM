@@ -15,6 +15,7 @@ from toolkitorm.orm.mysql import (
     not_,
     or_,
 )
+from toolkitorm.sql.query import BaseInsert, BaseUpdate
 
 factory = SessionFactory(connect, user="test", database="test", password="test")
 

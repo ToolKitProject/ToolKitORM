@@ -27,6 +27,18 @@ class Columns:
     ) -> "Columns":
         return Columns(self.table, [c for c in self.all if func(c, self.table)])
 
+    # Formatting
+    def format(
+        self, func: Callable[[BaseColumn, "sql.table.BaseTable"], str], sep: str = ","
+    ) -> str:
+        return sep.join([func(c, self.table) for c in self.all])
+
+    def names(self, sep: str = ",") -> str:
+        return self.format(lambda c, t: c.sql_name(), sep)
+
+    def values(self, sep: str = ",") -> str:
+        return self.format(lambda c, t: c.data(t).to_sql(), sep)
+
     # Value management
     def from_raw(self, raw: list[object]) -> None:
         assert len(raw) == len(self.all)  # TODO

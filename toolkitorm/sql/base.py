@@ -10,8 +10,7 @@ class HasSQL(ABC):
         pass
 
 
-class HasName:
-    @property
+class HasName(ABC):
     @abstractmethod
     def sql_name(self) -> str:
         pass

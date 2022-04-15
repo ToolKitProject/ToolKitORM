@@ -8,6 +8,7 @@ from . import table
 from . import query
 
 __all__ = [
+    "base",
     "dialect",
     "types",
     "storage",

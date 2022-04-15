@@ -36,10 +36,9 @@ class BaseTable(HasName, HasDialect):
         self.__columns__.from_args_kwargs(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"<{type(self).__name__} ({self.sql_name})>"
+        return f"<{type(self).__name__} ({self.sql_name()})>"
 
     @classmethod
-    @property
     def sql_name(cls) -> str:
         return cls.__dialect__.name(cls.__table__)
 

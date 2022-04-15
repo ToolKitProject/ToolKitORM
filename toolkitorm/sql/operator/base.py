@@ -26,19 +26,18 @@ class BaseCondition(BaseOperator, ABC):
 
 
 class Math(BaseOperator, ABC):
-    left: Data | str
+    left: str
     action: str
     right: Data
 
-    def __init__(self, dialect: BaseDialect, l: Data | str, a: str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, a: str, r: Data) -> None:
         super().__init__(dialect)
         self.left = l
         self.action = a
         self.right = r
 
     def to_sql(self) -> str:
-        l = self.left.to_sql() if isinstance(self.left, Data) else self.left
-        return f"{l} {self.action} {self.right.to_sql()}"
+        return f"{self.left} {self.action} {self.right.to_sql()}"
 
 
 class Logical(BaseCondition):

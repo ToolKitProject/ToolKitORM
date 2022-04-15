@@ -4,27 +4,27 @@ from toolkitorm.sql.storage.data import Data
 
 
 class Add(Math):
-    def __init__(self, dialect: BaseDialect, l: Data | str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.ADD, r)
 
 
 class Sub(Math):
-    def __init__(self, dialect: BaseDialect, l: Data | str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.SUB, r)
 
 
 class Mul(Math):
-    def __init__(self, dialect: BaseDialect, l: Data | str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.MUL, r)
 
 
 class Div(Math):
-    def __init__(self, dialect: BaseDialect, l: Data | str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.DIV, r)
 
 
 class Mod(Math):
-    def __init__(self, dialect: BaseDialect, l: Data | str, r: Data) -> None:
+    def __init__(self, dialect: BaseDialect, l: str, r: Data) -> None:
         super().__init__(dialect, l, dialect.MOD, r)
 
 
